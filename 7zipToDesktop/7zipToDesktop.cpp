@@ -34,9 +34,13 @@ string get_output_path(string src) {
 }
 void openExplorer(string path) {
 	string application("explorer.exe");
+	string out_dir = get_output_path(path);
+	if (!fs::exists(out_dir)) {
+		return;
+	}
 	HINSTANCE result = ShellExecuteA(nullptr, nullptr,
 		application.c_str(),
-		get_output_path(path).c_str(),
+		out_dir.c_str(),
 		NULL,
 		SW_SHOWNORMAL
 	);
@@ -59,12 +63,7 @@ int extractToDesktop(string archivePath) {
 		WaitForSingleObject(pi.hProcess, INFINITE);
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
-		// 終了コードを取得
-		DWORD exitCode;
-		if (!GetExitCodeProcess(pi.hProcess, &exitCode)) {
-			std::cerr << "GetExitCodeProcess failed, error: " << GetLastError() << std::endl;
-			return 1;
-		}
+	
 	}
 	else {
 		std::cerr << "Failed to execute command." << std::endl;
@@ -81,10 +80,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 	}
 	// std::string を std::wstring に変換
 	string args = lpCmdLine;
-	int ret = extractToDesktop(args);
-	if (ret > 0) {
-		return ret;
-	}
+	extractToDesktop(args);
 	openExplorer(args);
 	return 0;
 
