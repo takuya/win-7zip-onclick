@@ -1,5 +1,9 @@
 // 7zipToDesktop.cpp : Defines the entry point for the application.
 //
+// License: GPLv3
+// author : github.com/takuya
+// modified : 2024-05-29
+//
 
 #include<iostream>
 #include <Windows.h>
@@ -55,7 +59,7 @@ int extractToDesktop(string archivePath) {
 		WaitForSingleObject(pi.hProcess, INFINITE);
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
-		// I—¹ƒR[ƒh‚ğæ“¾
+		// çµ‚äº†ã‚³ãƒ¼ãƒ‰ã‚’å–å¾—
 		DWORD exitCode;
 		if (!GetExitCodeProcess(pi.hProcess, &exitCode)) {
 			std::cerr << "GetExitCodeProcess failed, error: " << GetLastError() << std::endl;
@@ -75,7 +79,7 @@ int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, 
 	if (lpCmdLine == NULL) {
 		return 1;
 	}
-	// std::string ‚ğ std::wstring ‚É•ÏŠ·
+	// std::string ã‚’ std::wstring ã«å¤‰æ›
 	string args = lpCmdLine;
 	int ret = extractToDesktop(args);
 	if (ret > 0) {
