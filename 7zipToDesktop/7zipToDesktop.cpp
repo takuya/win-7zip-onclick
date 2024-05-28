@@ -4,10 +4,10 @@
 // author : github.com/takuya
 // modified : 2024-05-29
 //
-
 #include<iostream>
 #include <Windows.h>
 #include <filesystem>
+#include <regex>
 
 namespace fs = std::filesystem;
 using string = std::string;
@@ -28,8 +28,10 @@ string get_output_path(string src) {
 	std::string dstDir = get_desktop().string();
 
 	fs::path src_path(src);
-	fs::path basename = src_path.stem().replace_extension();
-	fs::path dstPath = fs::path(dstDir) / basename;
+	fs::path basename = src_path.stem();
+	std::regex extensionRegex("\\.\\w+$");
+	std::string basename_noext = std::regex_replace(basename.string(), extensionRegex, "");
+	fs::path dstPath = fs::path(dstDir) / basename_noext;
 	return dstPath.string();
 }
 void openExplorer(string path) {
