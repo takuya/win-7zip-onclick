@@ -9,18 +9,17 @@ Windows Registry Editor Version 5.00
 [HKEY_CURRENT_USER\SOFTWARE\Classes\7-Zip.desktop]
 
 [HKEY_CURRENT_USER\SOFTWARE\Classes\7-Zip.desktop\DefaultIcon]
-@="\"C:\\Program Files (x86)\\Lhaplus\\LplsIcon.dll\",101"
+@="C:\\WINDOWS\\system32\\zipfldr.dll"
 
 [HKEY_CURRENT_USER\SOFTWARE\Classes\7-Zip.desktop\shell]
 
 [HKEY_CURRENT_USER\SOFTWARE\Classes\7-Zip.desktop\shell\open]
 
 [HKEY_CURRENT_USER\SOFTWARE\Classes\7-Zip.desktop\shell\open\command]
-@="\"C:\\Users\\takuya\\.app\\7zipToDesktop.exe\" %1"
+@="\"C:\\Users\\takuya\\.app\\7zipToDesktop.exe\" \"%1\""
 
 [HKEY_CURRENT_USER\SOFTWARE\Classes\.zip]
 @="7-Zip.desktop"
-
 
 ```
 
