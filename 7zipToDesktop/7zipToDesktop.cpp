@@ -23,7 +23,7 @@ fs::path get_desktop() {
 	std::string UserProfile(env_var);
 	return fs::path(UserProfile) / "Desktop";
 }
-string get_output_path(string src) {
+wstring get_output_path(wstring src) {
 
 	std::string dstDir = get_desktop().string();
 
@@ -32,31 +32,40 @@ string get_output_path(string src) {
 	std::regex extensionRegex("\\.\\w+$");
 	std::string basename_noext = std::regex_replace(basename.string(), extensionRegex, "");
 	fs::path dstPath = fs::path(dstDir) / basename_noext;
-	return dstPath.string();
+	return dstPath.wstring();
 }
-void openExplorer(string path) {
-	string application("explorer.exe");
-	string out_dir = get_output_path(path);
+void openExplorer(wstring path) {
+	wstring application(L"explorer.exe");
+	wstring out_dir = get_output_path(path);
 	if (!fs::exists(out_dir)) {
 		return;
 	}
-	HINSTANCE result = ShellExecuteA(nullptr, nullptr,
+	HINSTANCE result = ShellExecute(nullptr, nullptr,
 		application.c_str(),
 		out_dir.c_str(),
 		NULL,
 		SW_SHOWNORMAL
 	);
 }
-int extractToDesktop(string archivePath) {
+std::wstring stringToWString(const std::string& str) {
+	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), NULL, 0);
+	std::wstring wstr(size_needed, 0);
+	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), &wstr[0], size_needed);
+	return wstr;
+}
+int extractToDesktop(wstring archivePath) {
 	fs::path desktopPath = get_desktop();
 	if (desktopPath.empty()) {
 		return 1;
 	}
-	string args = archivePath;
-	args = " x " + args + " -aos -o" + desktopPath.string() + "\\*";
-	string cmd = R"(C:\Program Files\7-Zip\7zG.exe)" + args;
-	wstring cmdW(cmd.begin(), cmd.end());
-	LPCWSTR lpwargs = cmdW.c_str();
+	wstring args = archivePath;
+	args = L" x " + args + L" -aos -o" + desktopPath.wstring() + L"\\*";
+	wstring p7zip = L"\"C:\\Program Files\\7-Zip\\7zG.exe\"";
+	wstring cmd = p7zip + args;
+	//
+	//wstring cmdW(cmd.begin(), cmd.end());
+	//wstring cmdW = stringToWString(cmd);
+	LPCWSTR lpwargs = cmd.c_str();
 	LPWSTR  lpargs = const_cast<LPWSTR>(lpwargs);
 
 	STARTUPINFO si = {};
@@ -65,7 +74,7 @@ int extractToDesktop(string archivePath) {
 		WaitForSingleObject(pi.hProcess, INFINITE);
 		CloseHandle(pi.hProcess);
 		CloseHandle(pi.hThread);
-	
+
 	}
 	else {
 		std::cerr << "Failed to execute command." << std::endl;
@@ -75,17 +84,16 @@ int extractToDesktop(string archivePath) {
 }
 
 
-int WINAPI WinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPSTR lpCmdLine, _In_ int nShowCmd) {
+int WINAPI wWinMain(_In_ HINSTANCE hInstance, _In_opt_  HINSTANCE hPrevInstance, _In_ LPWSTR lpCmdLine, _In_ int nShowCmd) {
 
 	if (lpCmdLine == NULL) {
 		return 1;
 	}
-	// std::string を std::wstring に変換
-	string args = lpCmdLine;
+	//
+	wstring args = lpCmdLine;
 	extractToDesktop(args);
 	openExplorer(args);
 	return 0;
 
 
 }
-
