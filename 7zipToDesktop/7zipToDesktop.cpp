@@ -47,12 +47,7 @@ void openExplorer(wstring path) {
 		SW_SHOWNORMAL
 	);
 }
-std::wstring stringToWString(const std::string& str) {
-	int size_needed = MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), NULL, 0);
-	std::wstring wstr(size_needed, 0);
-	MultiByteToWideChar(CP_UTF8, 0, str.c_str(), static_cast<int>(str.size()), &wstr[0], size_needed);
-	return wstr;
-}
+
 int extractToDesktop(wstring archivePath) {
 	fs::path desktopPath = get_desktop();
 	if (desktopPath.empty()) {
